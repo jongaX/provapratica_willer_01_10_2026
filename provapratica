@@ -1,0 +1,107 @@
+create table aeronaves(
+	id serial primary key,
+	modelo varchar(100) not null,
+	codigo_cauda varchar(10) unique not null,
+	capacidade int not null CHECK(capacidade >= 0)
+);
+
+create table pilotos(
+	id serial primary key,
+	nome varchar(100) unique,
+	codigo_anac varchar(6) unique not null,
+	horas_voo int default 0 check(horas_voo >=0)
+);
+
+create table voos(
+	id serial primary key,
+	numero_voo varchar(100) not null,
+	origem varchar(100) not null,
+	destino varchar(100) not null,
+	data_hora default current_timestamp,
+	status varchar(100) default
+);
+
+
+create table voos(
+	id serial primary key,
+	aeronave_id int not null,
+	piloto_id int not null,
+	numero_voo varchar(100) not null,
+	origem varchar(100) not null,
+	destino varchar(100) not null,
+	data_hora timestamp default CURRENT_TIMESTAMP,
+	status varchar(100) default 'Agendado' check(status in('Agendado', 'Em Voo', 'Concluido', 'Cancelado')),
+
+
+	constraint fk_aeronave_id
+	foreign key (aeronave_id)
+	references aeronaves(id),
+
+	constraint fk_piloto_id
+	foreign key (piloto_id)
+	references pilotos(id)
+
+	
+	
+);
+
+create table passageiros(
+	id serial primary key,
+	nome varchar(100) not null,
+	cpf varchar(11) unique not null,
+	email varchar(100) unique not null
+);
+
+create table passagens(
+	id serial primary key,
+	voo_id int not null,
+	passageiro_id int not null,
+	assento varchar(4) not null,
+	classe varchar(100) default 'Economica' check(classe in ('Economica', 'Executiva')),
+
+	constraint fk_voo_id
+	foreign key (voo_id)
+	references voos(id),
+
+	constraint fk_passageiro_id
+	foreign key (passageiro_id)
+	references passageiros(id)
+);
+
+
+
+
+insert into aeronaves (modelo,codigo_cauda, capacidade) values
+('modelo1', 'a-34567890', 10),
+('modelo2', 'b-34567890', 11),
+('modelo3', 'c-34567890', 12),
+('modelo4', 'd-34567890', 13),
+('modelo5', 'e-34567890', 14);
+
+insert into pilotos (nome,codigo_anac, horas_voo) values
+('jonas', '123456', 0),
+('homem', '234567', 1),
+('joao', '345678', 2),
+('willer', '456789', 3),
+('usuario', '567890', 4);
+
+insert into voos (piloto_id, aeronave_id,numero_voo,aeronave_id, origem, destino, status) values
+(1, 1,'00', 'brasil', 'brasil', 'Agendado'),
+(2, 2,'00', 'brasil', 'brasil', 'Em Voo'),
+(3, 3,'01', 'italia', 'brasil', 'Em Voo'),
+(4, 4,'98', 'japao', 'brasil', 'Em Voo'),
+(5, 5,'15', 'japao', 'brasil', 'Concluido');
+
+insert into passageiros (nome,cpf, email) values
+('joaoa', '12345678900', 'sim@gmail.com'),
+('pessoa', '21345678900', 'si@gmail.com'),
+('assim', '32145678900', 'sm@gmail.com'),
+('samuel', '43215678900', 'im@gmail.com'),
+('chulte', '54321678900', 's@gmail.com');
+
+insert into passagens (assento,classe, email) values
+('a123', 'Economica','a@gmail.com'),
+('a122', 'Economica','b@gmail.com'),
+('a121', 'Economica','c@gmail.com'),
+('a120', 'Executiva','d@gmail.com'),
+('a113', 'Executiva','e@gmail.com');
